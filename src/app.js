@@ -32,8 +32,8 @@ const app = express();
 app.use(helmet());
 
 app.use(cors({
-    origin: CORS_ORIGIN,
-    credentials: true
+  origin: ['http://localhost:5173', 'https://dashboard-clinic-a.netlify.app'], 
+  credentials: true
 }));
 app.use(compression());
 
