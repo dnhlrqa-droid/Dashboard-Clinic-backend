@@ -24,7 +24,7 @@ const { limitEnpoint } = require("./middlewares/authMiddleware");
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || 'localhost';
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'https://dashboard-clinic-a.netlify.app';
 
 const app = express();
 
@@ -32,8 +32,8 @@ const app = express();
 app.use(helmet());
 
 app.use(cors({
-    origin: CORS_ORIGIN,
-    credentials: true
+  origin: ['http://localhost:5173', 'https://dashboard-clinic-a.netlify.app'], 
+  credentials: true
 }));
 app.use(compression());
 
@@ -86,7 +86,7 @@ async function startServer() {
       await connectDatabase();
 
       app.listen(PORT, () => {
-        logger.succss(`✅ The servec runs on: http://${HOST}:${PORT}`);
+        logger.succss(`✅ The server runs on: http://${HOST}:${PORT}`);
         logger.info(`📊 Environment: ${NODE_ENV}`);
         logger.info(`🔗 Data Base: ${process.env.MONGO_URL}`);
       });
@@ -95,6 +95,5 @@ async function startServer() {
     process.exit(1);
   }
 };
-
 
 startServer();
