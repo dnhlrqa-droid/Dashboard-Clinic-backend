@@ -96,4 +96,4 @@ async function startServer() {
   }
 };
 
-startServer();
+await startServer();
