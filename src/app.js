@@ -31,10 +31,7 @@ const app = express();
 // ==================== Middleware ==================== //
 app.use(helmet());
 
-app.use(cors({
-  origin: ['http://localhost:5173', 'https://dashboard-clinic-a.netlify.app'], 
-  credentials: true
-}));
+app.use(cors());
 app.use(compression());
 
 app.use(express.json({limit: "10mb"}));
@@ -96,4 +93,4 @@ async function startServer() {
   }
 };
 
-await startServer();
+startServer();
