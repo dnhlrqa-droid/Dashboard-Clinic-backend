@@ -47,27 +47,6 @@ if(NODE_ENV === "development") {
   app.use(morgan("combined"));
 }
 
-app.use(async (req, res, next) => {
-      try {
-           await connectDatabase();
-         logger.succss(`✅ The server runs on: http://${HOST}:${PORT}`);
-         logger.info(`📊 Environment: ${NODE_ENV}`);
-         logger.info(`🔗 Data Base: ${process.env.MONGO_URL}`);
-         next();
-      }catch(error) {
-         logger.error('❌ Server startup failed: ', error);
-         res.status(500).json({ status: false, message: "Database connection failed" });
-      }
-})
-
-
-app.use("/api", route);
-app.use("/api", router_patient);
-app.use("/api", router_appointment);
-app.use("/api", router_medical);
-app.use("/api", router_invoice);
-app.use("/api", router_analytics);
-
 
 
 app.get("/api/health", limitEnpoint, (req, res) => {
@@ -80,15 +59,37 @@ app.get("/api/health", limitEnpoint, (req, res) => {
 });
 
 
+app.use("/api", route);
+app.use("/api", router_patient);
+app.use("/api", router_appointment);
+app.use("/api", router_medical);
+app.use("/api", router_invoice);
+app.use("/api", router_analytics);
+
+
+
+
 app.use(notFoundHandler);
 
 process.on("uncaughtException", (error) => {
     logger.error("❌ Uncaught Exception", error);
-    process.exit(1);
 });
 process.on("unhandledRejection", (error) => {
   logger.error("❌ Unhandled Rejection", error);
-  process.exit(1);
 });
 
-module.exports = app;
+async function startServer() {
+  try {
+      await connectDatabase();
+
+      app.listen(PORT, () => {
+        logger.succss(`✅ The server runs on: http://${HOST}:${PORT}`);
+        logger.info(`📊 Environment: ${NODE_ENV}`);
+        logger.info(`🔗 Data Base: ${process.env.MONGO_URL}`);
+      });
+  }catch(error) {
+    logger.error('❌ Server startup failed: ', error);
+  }
+};
+
+startServer();
