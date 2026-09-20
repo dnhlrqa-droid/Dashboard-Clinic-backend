@@ -15,7 +15,6 @@ const router_analytics = require("./routers/analytics.routes");
 const {notFoundHandler} = require("./middlewares/errorHndler");
 
 const cookies = require("cookie-parser");
-const AppError = require("./middlewares/AppError");
 const { connectDatabase } = require("./config/database");
 const { logger } = require("./utils/logger");
 const { limitEnpoint } = require("./middlewares/authMiddleware");
@@ -48,16 +47,18 @@ if(NODE_ENV === "development") {
   app.use(morgan("combined"));
 }
 
-
-
-app.get("/api/health", limitEnpoint, (req, res) => {
-   res.status(200).json({
-    status: true,
-    message: 'API It works correctly',
-    version: "1.0.0",
-    timestamp: new Date().toISOString(),
-   });
-});
+app.use(async (req, res, next) => {
+      try {
+           await connectDatabase();
+         logger.succss(`✅ The server runs on: http://${HOST}:${PORT}`);
+         logger.info(`📊 Environment: ${NODE_ENV}`);
+         logger.info(`🔗 Data Base: ${process.env.MONGO_URL}`);
+         next();
+      }catch(error) {
+         logger.error('❌ Server startup failed: ', error);
+         res.status(500).json({ status: false, message: "Database connection failed" });
+      }
+})
 
 
 app.use("/api", route);
@@ -68,6 +69,15 @@ app.use("/api", router_invoice);
 app.use("/api", router_analytics);
 
 
+
+app.get("/api/health", limitEnpoint, (req, res) => {
+   res.status(200).json({
+    status: true,
+    message: 'API It works correctly',
+    version: "1.0.0",
+    timestamp: new Date().toISOString(),
+   });
+});
 
 
 app.use(notFoundHandler);
@@ -81,19 +91,4 @@ process.on("unhandledRejection", (error) => {
   process.exit(1);
 });
 
-async function startServer() {
-  try {
-      await connectDatabase();
-
-      app.listen(PORT, () => {
-        logger.succss(`✅ The server runs on: http://${HOST}:${PORT}`);
-        logger.info(`📊 Environment: ${NODE_ENV}`);
-        logger.info(`🔗 Data Base: ${process.env.MONGO_URL}`);
-      });
-  }catch(error) {
-    logger.error('❌ Server startup failed: ', error);
-    process.exit(1);
-  }
-};
-
-startServer();
+module.exports = app;
