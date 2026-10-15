@@ -81,15 +81,21 @@ process.on("unhandledRejection", (error) => {
 async function startServer() {
   try {
       await connectDatabase();
-
-      app.listen(PORT, () => {
-        logger.succss(`✅ The server runs on: http://${HOST}:${PORT}`);
-        logger.info(`📊 Environment: ${NODE_ENV}`);
-        logger.info(`🔗 Data Base: ${process.env.MONGO_URL}`);
-      });
+        
+      if(process.env.NODE_ENV === "developer") {
+        app.listen(PORT, () => {
+          logger.succss(`✅ The server runs on: http://${HOST}:${PORT}`);
+          logger.info(`📊 Environment: ${NODE_ENV}`);
+          logger.info(`🔗 Data Base: ${process.env.MONGO_URL}`);
+        });
+      }else {
+        module.exports = app;
+      }
+      
   }catch(error) {
     logger.error('❌ Server startup failed: ', error);
   }
 };
 
 startServer();
+
