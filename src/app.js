@@ -88,8 +88,6 @@ async function startServer() {
           logger.info(`📊 Environment: ${NODE_ENV}`);
           logger.info(`🔗 Data Base: ${process.env.MONGO_URL}`);
         });
-      }else {
-        module.exports = app;
       }
       
   }catch(error) {
@@ -99,3 +97,4 @@ async function startServer() {
 
 startServer();
 
+module.exports = app;
