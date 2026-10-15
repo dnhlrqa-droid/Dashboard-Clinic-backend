@@ -20,8 +20,7 @@ const { logger } = require("./utils/logger");
 const { limitEnpoint } = require("./middlewares/authMiddleware");
 
 
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || 'localhost';
+
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'https://dashboard-clinic-a.netlify.app';
 
@@ -58,6 +57,15 @@ app.get("/api/health", limitEnpoint, (req, res) => {
    });
 });
 
+app.use( async (req, res, next) => {
+   try {
+    await connectDatabase();
+    next();
+   }catch(error) {
+     logger.error("Server startup failed: ", error)
+     next();
+   }
+})
 
 app.use("/api", route);
 app.use("/api", router_patient);
@@ -78,23 +86,6 @@ process.on("unhandledRejection", (error) => {
   logger.error("❌ Unhandled Rejection", error);
 });
 
-async function startServer() {
-  try {
-      await connectDatabase();
-        
-      if(process.env.NODE_ENV === "developer") {
-        app.listen(PORT, () => {
-          logger.succss(`✅ The server runs on: http://${HOST}:${PORT}`);
-          logger.info(`📊 Environment: ${NODE_ENV}`);
-          logger.info(`🔗 Data Base: ${process.env.MONGO_URL}`);
-        });
-      }
-      
-  }catch(error) {
-    logger.error('❌ Server startup failed: ', error);
-  }
-};
 
-startServer();
 
 module.exports = app;
