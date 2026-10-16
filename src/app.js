@@ -20,12 +20,13 @@ const { logger } = require("./utils/logger");
 const { limitEnpoint } = require("./middlewares/authMiddleware");
 
 
-
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || 'localhost';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'https://dashboard-clinic-a.netlify.app';
 
 const app = express();
-
+app.set("trust proxy", 1);
 // ==================== Middleware ==================== //
 app.use(helmet());
 
@@ -63,7 +64,7 @@ app.use( async (req, res, next) => {
     next();
    }catch(error) {
      logger.error("Server startup failed: ", error)
-     next();
+     next(error);
    }
 })
 
@@ -79,13 +80,25 @@ app.use("/api", router_analytics);
 
 app.use(notFoundHandler);
 
-process.on("uncaughtException", (error) => {
-    logger.error("❌ Uncaught Exception", error);
-});
-process.on("unhandledRejection", (error) => {
-  logger.error("❌ Unhandled Rejection", error);
+app.use((err, req, res, next) => {
+  logger.error("Request error: ", err);
+  res.status(err.status || 500).json({ status: false, message: "Internal server error" });
 });
 
+async function startServer() {
+  try {
 
+    await connectDatabase();
 
+   app.listen(PORT, () => {
+          logger.success(`✅ The server runs on: http://${HOST}:${PORT}`);
+          logger.info(`📊 Environment: ${NODE_ENV}`);
+    });
+  }catch(error) {
+    logger.error("Server startup failed: ", error)
+  }
+};
+if(process.env.NODE_ENV === "development") {
+  startServer();
+}
 module.exports = app;
