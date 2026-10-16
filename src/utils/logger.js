@@ -63,8 +63,8 @@ const logger = {
     }
   },
 
-  succss: (message, data) => {
-     log("succss", message, data);
+  success: (message, data) => {
+     log("success", message, data);
   },
 };
 
