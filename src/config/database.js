@@ -7,9 +7,14 @@ const connectDatabase = async () => {
    try {
     const mongoURI = process.env.MONGO_URL;
 
+    if(mongoose.connection.readyState === 1) {
+       return logger.info("MongoDB is already connected.");
+    }
+
     const conn = await mongoose.connect(mongoURI,{ 
         retryWrites: true,
-        w: "majority"
+        w: "majority",
+        serverSelectionTimeoutMS: 8000,
     });
 
     logger.info(`✅ MongoDB successfully connected. ${conn.connection.host}`);
@@ -17,7 +22,7 @@ const connectDatabase = async () => {
 
    }catch(error) {
         logger.error(`❌ Connection failed to MongoDB:`, error);
-        process.exit(1);
+        throw new Error("Connection failed to MongoDB");
    }
 };
 
@@ -28,7 +33,7 @@ const disconnectDatabase = async () => {
        logger.info(('✅ Connection was lost with to mongoDB'))
     }  catch(error) {
        logger.error('❌ Error disconnecting', error);
-       process.exit(1);
+       throw new Error("Error disconnecting from MongoDB");
     }
 };
 
