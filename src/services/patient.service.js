@@ -17,15 +17,6 @@ async function createPatientService(newPatient) {
     }
     const result = validetedInputs.data;
     
-    const dentalChart = [];
-    
-    for(let i = 1; i <= 32; i++) {
-        dentalChart.push({
-            toothNumber: i,
-            condition: "Healthy",
-            notes: ""
-        });
-    };
     const patientCode = generatorsCode(result.patientCode);
     const newMedicalHistory = {
      hasDiabetes: result.hasDiabetes,
@@ -40,7 +31,6 @@ async function createPatientService(newPatient) {
      gender: result.gender,
      patientCode: patientCode,
      medicalHistory: newMedicalHistory,
-     dentalChart: dentalChart
     };
 
     const patient = await PATIENT_DB.findOne({phone: dataPatient.phone});

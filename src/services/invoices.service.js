@@ -2,8 +2,6 @@ const { INVOICE_DB, TRANSACTION_DB, PATIENT_DB } = require("../models/modules");
 const AppError = require("../middlewares/AppError");
 const { transactionValidated } = require("../validation/invoices.validation");
 const { idValideted } = require("../validation/auth.validation");
-const { limitLogin } = require("../middlewares/authMiddleware");
-const { disconnect } = require("mongoose");
 const { MESSAGES } = require("../utils/constants");
 
 
@@ -120,6 +118,8 @@ async function getAllInvoicesService(search, paymentStatus, page, limit) {
 
      return getInvoices;
 };
+
+
 
 
 module.exports = {

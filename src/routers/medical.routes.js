@@ -6,7 +6,7 @@ const route = express.Router();
 
 
 route.post("/create/medical-record", authMiddleware, checkRole('admin', 'doctor'), createMedicalRecord);
-route.get("/medical-records",authMiddleware, checkRole('admin', 'doctor'), getMedicalRecord);
+route.get("/medical-records",authMiddleware, checkRole('admin'), getMedicalRecord);
 
 
 

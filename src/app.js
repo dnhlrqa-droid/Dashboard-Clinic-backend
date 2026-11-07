@@ -80,10 +80,10 @@ app.use("/api", router_analytics);
 
 app.use(notFoundHandler);
 
-app.use((err, req, res, next) => {
-  logger.error("Request error: ", err);
-  res.status(err.status || 500).json({ status: false, message: "Internal server error" });
-});
+// app.use((err, req, res, next) => {
+//   logger.error("Request error: ", err);
+//   res.status(err.status || 500).json({ status: false, message: "Internal server error" });
+// });
 
 async function startServer() {
   try {
