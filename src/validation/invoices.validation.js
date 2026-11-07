@@ -21,7 +21,6 @@ const transactionValidated = z.object({
     notes: z.string(),
 });
 
-
 module.exports = {
    transactionValidated,
 };

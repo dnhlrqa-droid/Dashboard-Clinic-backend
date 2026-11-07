@@ -37,16 +37,6 @@ async function medicalRecordService(newMedicalRecord, createdBy) {
     const medicalRecord = await MEDICAL_RECORD_DB.create(newDataMedical);
     await APPOINTMENT_DB.findByIdAndUpdate(result.appointmentId, {status: "Completed"}, {new: true});
 
-    for(const tooth of result.teethTreated) {
-        await PATIENT_DB.updateOne(
-            { 
-                _id: result.patientId, 
-                "dentalChart.toothNumber": tooth.toothNumber
-            },
-            { $set: { "dentalChart.$.condition": tooth.newToothCondition } }
-            , {new: true}
-        )
-    };
 
     const newInvoiceMedical = {
             patientId: result.patientId,
@@ -59,7 +49,7 @@ async function medicalRecordService(newMedicalRecord, createdBy) {
     await INVOICE_DB.create(newInvoiceMedical);
     
 
-    return medicalRecord;
+    return newDataMedical;
 };
 
 

@@ -1,7 +1,7 @@
 
 
 const { USERS_DB } = require("../models/modules");
-const { registarService, loginService, updateAdminUserService, toggleDoctorStatusService } = require("../services/auth.service");
+const { registarService, loginService, updateAdminUserService, toggleDoctorStatusService, ChangePasswordService } = require("../services/auth.service");
 const { logger } = require("../utils/logger");
 const { MESSAGES } = require("../utils/constants");
 
@@ -68,9 +68,9 @@ const checkIsTokenInCookies = (req, res) => {
 
 const updateAdminUser = async (req, res) => {
    const {id} = req.params;
-   const {name, email, password, role, phone} = req.body;
+   const {name, email, role, phone} = req.body;
        const updateUser = {
-        name, email, password, role, phone, id
+        name, email, role, phone, id
        };
    try {
           const newUpdateUserAdmin = await updateAdminUserService(updateUser);
@@ -126,7 +126,7 @@ const getUsersAndSearch = async (req, res) => {
         }
       }
 
-      const user = await USERS_DB.find(querySearch).sort({createAt: -1});
+      const user = await USERS_DB.find(querySearch).sort({createAt: -1}).select("-password");
       const count = await USERS_DB.countDocuments().sort({createAt: -1});
 
       res.status(200).json({
@@ -144,6 +144,24 @@ const getUsersAndSearch = async (req, res) => {
     }
 };
 
+// ===================== //
+const ChangePassword = async (req, res) => {
+  const {newPassword, id} = req.body;
+  try {
+     await ChangePasswordService({id, newPassword});
+    res.status(201).json({
+      status: true,
+      message: MESSAGES.SUCCESS_UPDATE_EMPLOYEE,
+    });
+  } catch(error) {
+    res.status(500).json({
+      status: false,
+      message: error.message
+    });
+    return logger.error(error);
+  }
+};
+
 module.exports = {
     registareController,
     loginController,
@@ -151,4 +169,5 @@ module.exports = {
     updateAdminUser,
     toggleDoctorStatus,
     getUsersAndSearch,
+    ChangePassword,
 };

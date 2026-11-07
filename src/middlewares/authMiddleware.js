@@ -39,8 +39,8 @@ async function authMiddleware(req, res, next) {
 };
 
 const limitLogin = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 30,
+    windowMs: 1 * 60 * 1000,
+    max: 3,
     message: {
         message: MESSAGES.ERROR_LOGIN_LIMIT,
         statusCode: 429,

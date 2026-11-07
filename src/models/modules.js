@@ -35,20 +35,6 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 
-const toothSchema = new mongoose.Schema({
-  toothNumber: { type: Number, required: true, min: 1, max: 32 },
-  condition: { 
-    type: String, 
-    enum: ['Healthy', 'Caries', 'Filled', 'Missing', 'Crown', 'Root-Canal'], 
-    default: 'Healthy' 
-  },
-  treatmentStatus: {
-    type: String,
-    enum: ['No-Action', 'In-Progress', 'Completed'], 
-    default: 'No-Action'
-  },
-  notes: { type: String, trim: true }
-}, { _id: false });
 
 const patientSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
@@ -67,9 +53,6 @@ const patientSchema = new mongoose.Schema({
     hasSensitive: { type: Boolean, default: false },
     otherNotes: { type: String, trim: true, default: '' }, 
   },
-
-
-  dentalChart: [toothSchema]
 
 }, { timestamps: true });
 
@@ -147,12 +130,20 @@ const transactionSchema = new mongoose.Schema({
   notes: { type: String }
 }, { timestamps: true });
 
+
+const specialtySchema = new mongoose.Schema({
+  specialtie: { type: String, required: true },
+  price: {type: Number, required: true},
+  typeCode: {type: String, required: true}
+});
+
 const USERS_DB = mongoose.model("users", userSchema);
 const PATIENT_DB = mongoose.model("patient", patientSchema);
 const APPOINTMENT_DB = mongoose.model("appointment", appointmentSchema);
 const MEDICAL_RECORD_DB = mongoose.model("medicalRecord", medicalRecordSchema);
 const INVOICE_DB = mongoose.model("invoice", invoiceSchema);
 const TRANSACTION_DB = mongoose.model("transaction", transactionSchema);
+const SPECIALTY_DB = mongoose.model("specialty", specialtySchema);
 
 module.exports = {
     USERS_DB,
@@ -161,4 +152,5 @@ module.exports = {
     MEDICAL_RECORD_DB,
     INVOICE_DB,
     TRANSACTION_DB,
-}
+    SPECIALTY_DB,
+};

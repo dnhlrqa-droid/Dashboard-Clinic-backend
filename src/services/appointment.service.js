@@ -1,7 +1,6 @@
 const { PATIENT_DB, USERS_DB, APPOINTMENT_DB } = require("../models/modules");
 const AppError = require("../middlewares/AppError");
 const { appointmentValidated, updateAppointmentStatusValidated, paramsIdValidated } = require("../validation/appointmentValidation");
-const { logger } = require("../utils/logger");
 const { checkAppointmentConflict } = require("../utils/generators");
 const { MESSAGES } = require("../utils/constants");
 
@@ -22,8 +21,12 @@ async function getAllAppointmentService(querySearch, page, limit) {
             }
            },
            {$unwind: "$patientId"},
-           {$match: {"patientId.isActive": true}}
-      ])
+           {$match: {"patientId.isActive": true}},
+           
+           {$sort: {appointmentDate: -1}},
+           {$skip: skip},
+           {$limit: Limit},
+      ]);
 
     return appointment;
 };
@@ -77,12 +80,10 @@ async function appointmentsTodayService(Filter) {
             $gte: startOfToday,
             $lte: endOfToday    
         },
-        status: {$in: ['Pending', 'no-show']},
         ...Filter
     })
-    .populate('patientId', 'name patientCode gender')
-    .populate('doctorId', 'name')
-    .sort({ appointmentDate: 1 });
+    .populate('patientId', 'name patientCode gender doctor')
+    .sort({ appointmentDate: -1 });
 
     return todayAppointments
 };

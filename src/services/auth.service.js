@@ -3,13 +3,13 @@ const jwt = require("jsonwebtoken");
 
 const AppError = require("../middlewares/AppError");
 const { USERS_DB } = require("../models/modules");
-const { registareValideted, loginValideted, idValideted } = require("../validation/auth.validation");
-
+const { registareValideted, passwordValideted, idValideted, updateEmployee, changePassword } = require("../validation/auth.validation");
+const { MESSAGES } = require("../utils/constants");
 
 async function registarService(newUser) {
   const validetedInputs = await registareValideted.safeParseAsync(newUser);
       if(!validetedInputs.success) {
-        const errorMessage = validetedInputs.errors.error.format();
+        const errorMessage = validetedInputs.error.issues.map(i => i.message).join(", ");
         throw new AppError(errorMessage, 404);
       }
       const { name, email, password, role, phone } = validetedInputs.data;
@@ -27,7 +27,7 @@ async function registarService(newUser) {
 };
 
 async function loginService(user) {
-     const validetedInputs = loginValideted.safeParse(user);
+     const validetedInputs = passwordValideted.safeParse(user);
         if(!validetedInputs.success) {
          const errorMessage = validetedInputs.error.issues.map(i => i.message).join(", ");
               throw new AppError(errorMessage, 400);
@@ -52,9 +52,9 @@ async function loginService(user) {
     return {accessToken};
 };
 
-async function updateAdminUserService({id, name, email, password, role, phone}) {
+async function updateAdminUserService({id, name, email, role, phone}) {
      const checkIdValideted =  idValideted.safeParse({id});
-        const validetedInputs =  registareValideted.safeParse({name, email, password, role, phone});
+        const validetedInputs =  updateEmployee.safeParse({name, email, role, phone});
 
         if(!checkIdValideted.success) {
               const errorMessage = checkIdValideted.error.issues.map(i => i.message).join(", ");
@@ -71,7 +71,6 @@ async function updateAdminUserService({id, name, email, password, role, phone}) 
         const newUpdatedUser = {
             name: resultValideted.name,
             email: resultValideted.email,
-            password: resultValideted.password,
             phone: resultValideted.phone,
             role: resultValideted.role,
         };
@@ -93,9 +92,25 @@ async function toggleDoctorStatusService({id}) {
      return toogleDoctor;
 };
 
+
+async function ChangePasswordService({id, newPassword}) {
+    const checkInputs = changePassword.safeParse({id, newPassword});
+    if(!checkInputs.success){
+        const errorMessage = checkInputs.error.issues.map(i => i.message).join(", ");
+        throw new AppError(errorMessage, 400);
+    }
+
+    const result = checkInputs.data;
+    const user = await USERS_DB.findById(result.id);
+    if(!user) throw new AppError(MESSAGES.ERROR_EMPLOYEE_NOT_FOUND, 404);
+    user.password = result.newPassword;
+    await user.save();
+};
+
 module.exports = {
     registarService,
     loginService,
     updateAdminUserService,
     toggleDoctorStatusService,
+    ChangePasswordService,
 };

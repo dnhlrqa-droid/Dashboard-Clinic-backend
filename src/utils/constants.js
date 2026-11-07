@@ -6,21 +6,25 @@
 const MESSAGES = {
   // success
   SUCCESS_LOGIN: 'Logged in successfully.',
-  SUCCESS_GET_PATIENT: 'Get patients successfully.',
+  SUCCESS_GET_PATIENT: 'Patients has been successfully.',
   SUCCESS_CREATE_PATIENT: 'Created patient successfully.',
   SUCCESS_UPDATE_PATIENT: 'Patient data has been successfully updated.',
   SUCCESS_CREATE_APPOINTMENT: 'Appointment successfully created.',
-  SUCCESS_GET_APPOINTMENT: 'Get appointments successfully.',
+  SUCCESS_GET_APPOINTMENT: 'Appointments has been successfully.',
   SUCCESS_UPDATE_APPOINTMENT: 'Appointment data has been successfully updated.',
   SUCCESS_UPDATE_APPOINTMENT_STATUS: 'Appointment status has been successfully updated.',
   SUCCESS_DELETE_PATIENT: 'The patient has been successfully deleted.',
   SUCCESS_CREATE_EMPLOYEE: 'The employee has been successfully created.',
   SUCCESS_UPDATE_EMPLOYEE: 'Employee data has been updated successfully.',
-  SUCCESS_GET_MEDICAL_RECORD: 'Get medical record successfully',
+  SUCCESS_GET_MEDICAL_RECORD: 'Medical record has been successfully',
   SUCCESS_CREATE_MEDICAL_RECORD: 'created medical record successfully.',
   SUCCESS_CREATE_TRANSACTION: 'created transaction successfully.',
-  SUCCESS_GET_TRANSACTION: 'Get transaction successfully.',
-  SUCCESS_GET_ID_TRANSACTION: 'Get transaction by id successfully.',
+  SUCCESS_GET_TRANSACTION: 'Transaction has been successfully.',
+  SUCCESS_GET_ID_TRANSACTION: 'Transaction by id has been successfully.',
+
+  SUCCESS_GET_SPECIALTY: 'Specializations have been successfully.',
+  SUCCESS_UPDATE_SPECIALTY: 'Updated successfully.',
+  SUCCESS_DELETE_SPECIALTY: 'Deleted successfully.',
 
   // errors
   ERROR_AUTH_TOKEN: 'Authorization token missing',
@@ -41,12 +45,15 @@ const MESSAGES = {
   ERROR_EMPLOYEE_INVALID: 'Invalid ID format',
   ERROR_EMPLOYEE_EMAIL: 'The account is incorrect',
   ERROR_EMPLOYEE_PASSWORD: 'The password is incorrect',
-
+  
   ERROR_APPOINTMENT_NOT_FOUND: 'Appointment not found',
   ERROR_APPOINTMENT_CONFLICT: 'There is a conflict with another appointment for this doctor at the same time',
   ERROR_APPOINTMENT_INVALID: 'This patient is unavailable',
   
   ERROR_DOCTOR_NOT_FOUND: 'Doctor not found',
+
+  ERROR_SPECIALTY_NOT_FOUND: 'The specialty does not exist.',
+  ERROR_SPECIALTY_EXISTS: 'Specialty with this typeCode already exists.',
 
   ERROR_TRANSACTION_NOT_FOUND: 'Transaction not found',
 
